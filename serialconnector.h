@@ -12,7 +12,7 @@ class SerialConnector : public QObject
 public:
     explicit SerialConnector(QString name, QObject *parent = nullptr);
     QSerialPort* arduino;
-    int writeToChanel(char* data);
+    int writeToChanel(char* data,int64_t size = -1);
 public slots:
     void gotNewData();
 signals:

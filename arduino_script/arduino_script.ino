@@ -15,13 +15,14 @@ piece_data rcv_pd(){
 piece_data pd = piece_data{121,37.7,"Hollow world"};
 
 int a = 420;
-String reply = "old";
+piece_data reply;
+
 void setup() {
     Serial.begin(9600);
     while(Serial.available()==0){
       delay(100);
     }
-    reply = Serial.readString();
+    Serial.readBytes((char*)&reply, sizeof(piece_data));
 }
 
 // the loop routine runs over and over again forever:
@@ -36,6 +37,6 @@ void loop() {
     
   // print out the value you read:
   //Serial.println("#"+reply+"#");
-  Serial.write((char*)&pd,sizeof(pd));
+  Serial.write((char*)&reply,sizeof(piece_data));
   delay(1000);        // delay in between reads for stability
 }

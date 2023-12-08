@@ -26,13 +26,20 @@ SerialConnector::SerialConnector(QString name, QObject *parent)
     qDebug()<<"connector connected";
 }
 
-int SerialConnector::writeToChanel(char *data){
+int SerialConnector::writeToChanel(char *data, int64_t size){
     //QByteArray dat(data);
-    int result = arduino->write(data);
-    qDebug()<<"Wrote to chanel:"<<data;
+    int result;
+    if(size == -1)
+        result = arduino->write(data);
+    else
+        result = arduino->write(data,size);
+    qDebug()<<"Wrote to chanel"<<result<<"bytes:"<<data;
     return result;
-}
-
+}/*
+SerialConnector::~SerialConnector(){
+    arduino->close();
+    delete arduino;
+}*/
 void SerialConnector::gotNewData(){
     char* line = new char[256];
     int length = arduino->readLine(line,256);
@@ -40,7 +47,7 @@ void SerialConnector::gotNewData(){
     qDebug()<<"#########################################";
     qDebug()<<length<<"chars:"<<line;
     qDebug()<<"pd formated:"<<"piece_data{"<<pd->n<<pd->x<<pd->msg<<"}";
-    delete[] line;
     qDebug()<<"#########################################";
+    delete[] line;
 }
 
