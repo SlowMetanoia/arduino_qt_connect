@@ -1,5 +1,7 @@
-#include "serialconnector.h"
+//todo: data type matching and split.
 
+#include "serialconnector.h"
+#include "data_payload.h"
 SerialConnector::SerialConnector(QString name, QObject *parent)
     : QObject{parent}{
     arduino = new QSerialPort();
@@ -15,17 +17,30 @@ SerialConnector::SerialConnector(QString name, QObject *parent)
 
     //connection opening
     while(!arduino->open(QSerialPort::ReadWrite)){
-        qDebug()<<"error occured while openning serial port";
         QThread::sleep(1);
+        qDebug()<<"error occured while openning serial port, trying again...";
     }
     //arduino->setDataTerminalReady(true);
     qDebug()<<"port opened";
     QObject::connect(arduino,SIGNAL(readyRead()),this,SLOT(gotNewData()));
     qDebug()<<"connector connected";
 }
+
+int SerialConnector::writeToChanel(char *data){
+    //QByteArray dat(data);
+    int result = arduino->write(data);
+    qDebug()<<"Wrote to chanel:"<<data;
+    return result;
+}
+
 void SerialConnector::gotNewData(){
     char* line = new char[256];
     int length = arduino->readLine(line,256);
-
-    qDebug()<<line;
+    piece_data* pd = (piece_data*)line;
+    qDebug()<<"#########################################";
+    qDebug()<<length<<"chars:"<<line;
+    qDebug()<<"pd formated:"<<"piece_data{"<<pd->n<<pd->x<<pd->msg<<"}";
+    delete[] line;
+    qDebug()<<"#########################################";
 }
+

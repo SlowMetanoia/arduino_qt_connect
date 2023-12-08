@@ -4,22 +4,25 @@
 #include <QDebug>
 #include <QThread>
 #include "serialconnector.h"
+#include "data_payload.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    SerialConnector connector("ttyUSB0");
+    qDebug()<<"initializing connector...";
+    qDebug()<<sizeof(int);
+    qDebug()<<sizeof(float);
+    qDebug()<<sizeof(char[20]);
+    qDebug()<<sizeof(piece_data);
 
-    QSerialPort* arduino = connector.arduino;
+    SerialConnector connector("ttyUSB0",&a);
 
-    char* x = "110a";
 
-    QByteArray data((char*)x);
     QThread::sleep(1);
-    arduino->write(data);
+    connector.writeToChanel("110a423789");
     QThread::sleep(1);
-    qDebug()<<"data wrote:"<<data;
 
+    qDebug()<<"initializing application...";
     return a.exec();
 }
